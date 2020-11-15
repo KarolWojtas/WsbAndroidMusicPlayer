@@ -23,6 +23,14 @@ class MainActivity : AppCompatActivity() {
             loadDataFromAssets()
             loadDataFromMediaStore()
         }
+        val audioListAdapter = AudioDataRecyclerViewAdapter()
+        // listen for changes in audio data list
+        viewModel.audioDataList.observe(this, {
+            it?.let {
+                audioListAdapter.submitList(it)
+            }
+        })
+        binding.recyclerView.adapter = audioListAdapter
     }
 
     private fun loadDataFromAssets(){
