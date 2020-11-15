@@ -60,7 +60,7 @@ data class Duration(val millis: Long = 0){
     val minutes
     get() = seconds / 60
     override fun toString(): String {
-        return "${minutes.toString().padStart(2, '0')}:$secondsMod"
+        return "${minutes.toString().padStart(2, '0')}:${secondsMod.toString().padStart(2, '0')}"
     }
     val clone: Duration
     get() = Duration(millis)

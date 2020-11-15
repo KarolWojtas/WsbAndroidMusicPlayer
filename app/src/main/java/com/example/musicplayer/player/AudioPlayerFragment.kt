@@ -41,6 +41,7 @@ class AudioPlayerFragment : Fragment() {
                 if(mediaPlayer?.isPlaying == true){
                     mediaPlayer?.stop()
                     mediaPlayer?.release()
+                    playerViewModel.resetTimer()
                 }
                 mediaPlayer = MediaPlayer()
                 // handle asset audio
@@ -53,8 +54,9 @@ class AudioPlayerFragment : Fragment() {
                 }
                 mediaPlayer?.apply {
                     prepare()
-                     setVolume(1f, 1f)
+                    setVolume(1f, 1f)
                     resume()
+                    playerViewModel.startTimer()
                 }
             } else {
                 mediaPlayer?.stop()
