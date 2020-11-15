@@ -22,12 +22,10 @@
             android:layout_height="wrap_content"
             android:text="@{playerViewModel.currentAudioData.title}"
             android:textSize="64dp"
-            app:layout_constraintBottom_toTopOf="@+id/playerActionBtn"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/playerPrevBtn"
@@ -35,23 +33,20 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_baseline_skip_previous_24"
             app:layout_constraintBottom_toBottomOf="@+id/playerActionBtn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/playerTitleTxt"
-             />
+            app:layout_constraintTop_toTopOf="@+id/playerActionBtn" />
 
         <ImageButton
             android:id="@+id/playerActionBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginTop="16dp"
             android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_play_circle_outline_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/playerTitleTxt"
             app:playerActionSrc="@{playerViewModel.isPlaying}" />
@@ -60,14 +55,24 @@
             android:id="@+id/playerNextBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_baseline_skip_next_24"
             app:layout_constraintBottom_toBottomOf="@+id/playerActionBtn"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/playerTitleTxt" />
+            app:layout_constraintTop_toTopOf="@+id/playerActionBtn" />
+
+        <TextView
+            android:id="@+id/playerDurationTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:text="@{playerViewModel.duration.toString()}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/playerActionBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

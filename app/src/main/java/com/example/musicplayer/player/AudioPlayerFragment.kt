@@ -77,12 +77,13 @@ class AudioPlayerFragment : Fragment() {
         binding.playerActionBtn.setOnClickListener{
             onPlayerAction()
         }
-        // next/prev
+        // next
         binding.playerNextBtn.setOnClickListener {
             val nextAudio = mainViewModel.nextAudio(playerViewModel.currentAudioData.value!!)!!
             playerViewModel.setCurrentAudio(nextAudio)
         }
 
+        // prev
         binding.playerPrevBtn.setOnClickListener {
             val nextAudio = mainViewModel.prevAudio(playerViewModel.currentAudioData.value!!)!!
             playerViewModel.setCurrentAudio(nextAudio)
@@ -96,7 +97,7 @@ class AudioPlayerFragment : Fragment() {
         releasePlayer()
     }
 
-    fun onPlayerAction(){
+    private fun onPlayerAction(){
         if (playerViewModel.isPlaying.value == true){
             pause()
         } else {
