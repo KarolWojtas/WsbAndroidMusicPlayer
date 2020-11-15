@@ -1,5 +1,6 @@
 package com.example.musicplayer
 
+import android.content.ContentResolver
 import android.content.res.AssetManager
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -14,12 +15,17 @@ class MainActivityViewModel: ViewModel(){
     private val _audioDataList = MutableLiveData<MutableList<AudioData>>(mutableListOf())
     val audioDataList: LiveData<MutableList<AudioData>>
     get() =   _audioDataList
+    val audioDataListIsEmpty
+    get() = _audioDataList.value == null || (_audioDataList.value != null && _audioDataList.value?.isEmpty()!!)
 
     fun loadAssetAudioData(assets: AssetManager){
-        if(_audioDataList.value == null || (_audioDataList.value != null && _audioDataList.value?.isEmpty()!!)){
-            val audioData = MusicDataService.instance.loadAudioDataFromAssets(assets)
-            addToAudioDataList(audioData)
-        }
+        val audioData = MusicDataService.instance.loadAudioDataFromAssets(assets)
+        addToAudioDataList(audioData)
+    }
+
+    fun loadMediaStoreAudioData(contentResolver: ContentResolver){
+        val audioData = MusicDataService.instance.loadDataFromMediaStore(contentResolver)
+        addToAudioDataList(audioData)
     }
 
     fun addToAudioDataList(newData: List<AudioData>){
