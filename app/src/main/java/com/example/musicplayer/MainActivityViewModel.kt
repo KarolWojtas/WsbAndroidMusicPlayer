@@ -35,7 +35,7 @@ class MainActivityViewModel: ViewModel(){
     fun nextAudio(audioData: AudioData): AudioData?{
         _audioDataList.value?.let {
             val index = it.indexOf(audioData)
-            return if(index == it.size - 1) it[index + 1] else it.first()
+            return if(index == it.size - 1) it.first() else it[index + 1]
         }
         return null
     }

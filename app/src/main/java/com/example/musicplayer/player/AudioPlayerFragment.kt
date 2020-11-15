@@ -77,7 +77,16 @@ class AudioPlayerFragment : Fragment() {
         binding.playerActionBtn.setOnClickListener{
             onPlayerAction()
         }
-        // todo 2. add next/prev
+        // next/prev
+        binding.playerNextBtn.setOnClickListener {
+            val nextAudio = mainViewModel.nextAudio(playerViewModel.currentAudioData.value!!)!!
+            playerViewModel.setCurrentAudio(nextAudio)
+        }
+
+        binding.playerPrevBtn.setOnClickListener {
+            val nextAudio = mainViewModel.prevAudio(playerViewModel.currentAudioData.value!!)!!
+            playerViewModel.setCurrentAudio(nextAudio)
+        }
 
         return binding.root
     }
