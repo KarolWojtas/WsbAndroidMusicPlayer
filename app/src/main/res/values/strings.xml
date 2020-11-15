@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MusicPlayer</string>
+    <string name="play_given_audio">play given audio</string>
 </resources>

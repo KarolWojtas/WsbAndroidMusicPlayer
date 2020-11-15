@@ -22,6 +22,6 @@ data class Duration(val millis: Long = 0){
     val minutes
     get() = seconds / 60
     override fun toString(): String {
-        return "$minutes:$secondsMod:$millisMod"
+        return "${minutes.toString().padStart(2, '0')}:$secondsMod"
     }
 }
