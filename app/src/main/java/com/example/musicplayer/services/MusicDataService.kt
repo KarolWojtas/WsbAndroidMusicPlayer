@@ -129,14 +129,15 @@ class MusicDataService private constructor() {
                 val mime = cursor.getString(mimeColumn)
 
                 val contentUri: Uri = ContentUris.withAppendedId(
-                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                         id
                 )
                 Log.d("MainActivity", arrayOf(contentUri, name, duration).toString())
                 audioDataList.add(AudioData(
                         // todo file name
                         title = title,
-                        fileName = id.toString(),
+                        fileName = contentUri.lastPathSegment?:id.toString(),
+                        uri = contentUri,
                         artist = artist,
                         duration = Duration(duration.toLong()),
                         bitRate = null,

@@ -40,6 +40,8 @@ class AudioPlayerFragment : Fragment() {
                 if(it.isAsset){
                     val assetFileDescriptor = requireActivity().assets.openFd("$ASSETS_AUDIO_DIR/${it.fileName}")
                     mediaPlayer?.setDataSource(assetFileDescriptor.fileDescriptor, assetFileDescriptor.startOffset, assetFileDescriptor.length)
+                } else {
+                    mediaPlayer?.setDataSource(requireContext(), it.uri!!)
                 }
                 mediaPlayer?.apply {
                     prepare()
@@ -67,8 +69,12 @@ class AudioPlayerFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        releasePlayer()
+    }
+
+    fun releasePlayer(){
         playerViewModel.cleanup()
         if(mediaPlayer?.isPlaying == true){
             mediaPlayer?.stop()
