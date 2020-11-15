@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/navigation"
+    app:startDestination="@id/audioDataList">
+    <fragment
+        android:id="@+id/audioDataList"
+        android:name="com.example.musicplayer.list.AudioDataList"
+        android:label="AudioDataList" >
+        <action
+            android:id="@+id/action_audioDataList_to_audioPlayerFragment"
+            app:destination="@id/audioPlayerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/audioPlayerFragment"
+        android:name="com.example.musicplayer.player.AudioPlayerFragment"
+        android:label="AudioPlayerFragment" >
+        <action
+            android:id="@+id/action_audioPlayerFragment_to_audioDataList"
+            app:destination="@id/audioDataList"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <argument
+            android:name="audioData"
+            app:argType="com.example.musicplayer.model.AudioData" />
+    </fragment>
+</navigation>

@@ -1,4 +1,4 @@
-package com.example.musicplayer
+package com.example.musicplayer.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,9 @@ import com.example.musicplayer.databinding.AudioDataItemBinding
 import com.example.musicplayer.model.AudioData
 
 typealias onClickAudioItemData = (audioData: AudioData, position: Int) -> Unit
-class AudioDataRecyclerViewAdapter(private val onClick: onClickAudioItemData): ListAdapter<AudioData, AudioDataRecyclerViewAdapter.ViewHolder>(AudioDataDiffCallback){
+class AudioDataRecyclerViewAdapter(private val onClick: onClickAudioItemData): ListAdapter<AudioData, AudioDataRecyclerViewAdapter.ViewHolder>(
+    AudioDataDiffCallback
+){
     class ViewHolder(private val binding: AudioDataItemBinding, private val onClick: onClickAudioItemData): RecyclerView.ViewHolder(binding.root){
         fun bind(audioData: AudioData, position: Int){
             binding.audioData = audioData
