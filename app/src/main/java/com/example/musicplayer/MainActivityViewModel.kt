@@ -28,7 +28,23 @@ class MainActivityViewModel: ViewModel(){
         addToAudioDataList(audioData)
     }
 
-    fun addToAudioDataList(newData: List<AudioData>){
+    private fun addToAudioDataList(newData: List<AudioData>){
         this._audioDataList.value = this._audioDataList.value?.apply { addAll(newData) }
+    }
+
+    fun nextAudio(audioData: AudioData): AudioData?{
+        _audioDataList.value?.let {
+            val index = it.indexOf(audioData)
+            return if(index == it.size - 1) it[index + 1] else it.first()
+        }
+        return null
+    }
+
+    fun prevAudio(audioData: AudioData): AudioData?{
+        _audioDataList.value?.let {
+            val index = it.indexOf(audioData)
+            return if(index > 0) it[index - 1] else it.last()
+        }
+        return null
     }
 }
