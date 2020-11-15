@@ -21,4 +21,8 @@ class AudioPlayerViewModel: ViewModel(){
     fun setCurrentAudio(audioData: AudioData){
         _currentAudioData.value = audioData
     }
+
+    fun setIsPlaying(isPlaying: Boolean){
+        _isPlaying.value = isPlaying
+    }
 }
