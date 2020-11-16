@@ -25,9 +25,20 @@ class AudioPlayerFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        // init binding
         val layoutInflater = LayoutInflater.from(context)
         binding = FragmentAudioPlayerBinding.inflate(layoutInflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
+        // init player
+        mediaPlayer = MediaPlayer().apply {
+            // triggered after prepareAsync is finished
+            setOnPreparedListener {
+                start()
+                playerViewModel.setIsPlaying(true)
+            }
+            setOnCompletionListener { reset() }
+        }
+        // init view model
         mainViewModel = ViewModelProviders.of(requireActivity()).get(MainActivityViewModel::class.java)
         playerViewModel = ViewModelProviders.of(requireActivity()).get(AudioPlayerViewModel::class.java)
         binding.mainViewModel = mainViewModel
@@ -39,11 +50,9 @@ class AudioPlayerFragment : Fragment() {
         playerViewModel.currentAudioData.observe(viewLifecycleOwner){
             if(it != null){
                 if(mediaPlayer?.isPlaying == true){
-                    mediaPlayer?.stop()
-                    mediaPlayer?.release()
                     playerViewModel.resetTimer()
                 }
-                mediaPlayer = MediaPlayer()
+                mediaPlayer?.reset()
                 // handle asset audio
                 if(it.isAsset){
                     val assetFileDescriptor = requireActivity().assets.openFd("$ASSETS_AUDIO_DIR/${it.fileName}")
@@ -53,9 +62,7 @@ class AudioPlayerFragment : Fragment() {
                     mediaPlayer?.setDataSource(requireContext(), it.uri!!)
                 }
                 mediaPlayer?.apply {
-                    prepare()
-                    setVolume(1f, 1f)
-                    resume()
+                    prepareAsync()
                     playerViewModel.startTimer()
                 }
             } else {
