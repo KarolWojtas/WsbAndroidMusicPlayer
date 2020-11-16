@@ -1,11 +1,12 @@
 package com.example.musicplayer.player
 
+import android.media.MediaPlayer
 import androidx.lifecycle.*
 import com.example.musicplayer.model.AudioData
 import com.example.musicplayer.model.Duration
 import kotlinx.coroutines.*
 
-class AudioPlayerViewModel: ViewModel(){
+class AudioPlayerViewModel(val mediaPlayer: MediaPlayer): ViewModel(){
     private val defaultDelayMillis = 200L
     private val _isPlaying = MutableLiveData(false)
     val isPlaying: LiveData<Boolean>
@@ -62,7 +63,7 @@ class AudioPlayerViewModel: ViewModel(){
                 delay(delay)
             }
             delay = defaultDelayMillis
-            _timer.value = time
+            _timer.value = mediaPlayer.currentPosition.toLong()
         }
     }
 

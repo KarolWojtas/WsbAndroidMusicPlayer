@@ -20,7 +20,7 @@ class AudioPlayerFragment : Fragment() {
     private lateinit var binding: FragmentAudioPlayerBinding
     private lateinit var mainViewModel: MainActivityViewModel
     private lateinit var playerViewModel: AudioPlayerViewModel
-    private var mediaPlayer: MediaPlayer? = null
+    private lateinit var mediaPlayer: MediaPlayer
     val navArgs: AudioPlayerFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +40,7 @@ class AudioPlayerFragment : Fragment() {
         }
         // init view model
         mainViewModel = ViewModelProviders.of(requireActivity()).get(MainActivityViewModel::class.java)
-        playerViewModel = ViewModelProviders.of(requireActivity()).get(AudioPlayerViewModel::class.java)
+        playerViewModel = ViewModelProviders.of(requireActivity(), AudioPlayerViewModelFactory(this.mediaPlayer)).get(AudioPlayerViewModel::class.java)
         binding.mainViewModel = mainViewModel
         binding.playerViewModel = playerViewModel
 
