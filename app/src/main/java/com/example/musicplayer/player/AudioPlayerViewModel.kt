@@ -53,8 +53,8 @@ class AudioPlayerViewModel: ViewModel(){
     }
 
     private suspend fun countUp(startMillis: Long, endMillis: Long) {
+        // gets behid, maybe try changing context
         _timer.value = startMillis
-        // todo verify
         val startMod = startMillis % defaultDelayMillis
         var delay = if(startMod != 0L) startMod else defaultDelayMillis
         for (time in startMillis..endMillis step delay){
