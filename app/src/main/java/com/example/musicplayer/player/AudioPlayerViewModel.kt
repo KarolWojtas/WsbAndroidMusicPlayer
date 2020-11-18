@@ -20,6 +20,8 @@ class AudioPlayerViewModel(val mediaPlayer: MediaPlayer): ViewModel(){
 
     val duration: LiveData<String>
     get() = Transformations.map(_timer) { Duration(it).toString() }
+    val durationText: LiveData<String>
+        get() = duration.map { "$it : ${currentAudioData.value?.duration}" }
 
     fun cleanup(){
         _currentAudioData.value = null

@@ -21,7 +21,7 @@ class AudioPlayerFragment : Fragment() {
     private lateinit var mainViewModel: MainActivityViewModel
     private lateinit var playerViewModel: AudioPlayerViewModel
     private lateinit var mediaPlayer: MediaPlayer
-    val navArgs: AudioPlayerFragmentArgs by navArgs()
+    private val navArgs: AudioPlayerFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -49,24 +49,24 @@ class AudioPlayerFragment : Fragment() {
          */
         playerViewModel.currentAudioData.observe(viewLifecycleOwner){
             if(it != null){
-                if(mediaPlayer?.isPlaying == true){
+                if(mediaPlayer.isPlaying == true){
                     playerViewModel.resetTimer()
                 }
-                mediaPlayer?.reset()
+                mediaPlayer.reset()
                 // handle asset audio
                 if(it.isAsset){
                     val assetFileDescriptor = requireActivity().assets.openFd("$ASSETS_AUDIO_DIR/${it.fileName}")
-                    mediaPlayer?.setDataSource(assetFileDescriptor.fileDescriptor, assetFileDescriptor.startOffset, assetFileDescriptor.length)
+                    mediaPlayer.setDataSource(assetFileDescriptor.fileDescriptor, assetFileDescriptor.startOffset, assetFileDescriptor.length)
                 } else {
                     // handle media store audio
-                    mediaPlayer?.setDataSource(requireContext(), it.uri!!)
+                    mediaPlayer.setDataSource(requireContext(), it.uri!!)
                 }
-                mediaPlayer?.apply {
+                mediaPlayer.apply {
                     prepareAsync()
                     playerViewModel.startTimer()
                 }
             } else {
-                mediaPlayer?.stop()
+                mediaPlayer.stop()
             }
         }
         /**
@@ -115,22 +115,22 @@ class AudioPlayerFragment : Fragment() {
     }
 
     private fun pause(){
-        mediaPlayer?.pause()
+        mediaPlayer.pause()
         playerViewModel.setIsPlaying(false)
     }
 
     private fun resume(){
-        mediaPlayer?.start()
+        mediaPlayer.start()
         playerViewModel.setIsPlaying(true)
     }
 
     private fun releasePlayer(){
         playerViewModel.cleanup()
-        if(mediaPlayer?.isPlaying == true){
-            mediaPlayer?.stop()
+        if(mediaPlayer.isPlaying){
+            mediaPlayer.stop()
         }
-        mediaPlayer?.reset()
-        mediaPlayer?.release()
+        mediaPlayer.reset()
+        mediaPlayer.release()
     }
 }
 

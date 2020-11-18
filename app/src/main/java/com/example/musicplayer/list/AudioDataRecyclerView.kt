@@ -15,7 +15,7 @@ class AudioDataRecyclerViewAdapter(private val onClick: onClickAudioItemData): L
     class ViewHolder(private val binding: AudioDataItemBinding, private val onClick: onClickAudioItemData): RecyclerView.ViewHolder(binding.root){
         fun bind(audioData: AudioData, position: Int){
             binding.audioData = audioData
-            binding.playBtn.setOnClickListener {
+            binding.audioItemRoot.setOnClickListener {
                 onClick(audioData, position)
             }
         }
