@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import java.lang.IllegalArgumentException
 
-class AudioPlayerViewModelFactory(private val mediaPlayer: MediaPlayer) : ViewModelProvider.Factory{
+class AudioPlayerViewModelFactory() : ViewModelProvider.Factory{
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if(modelClass.isAssignableFrom(AudioPlayerViewModel::class.java)){
-            return AudioPlayerViewModel(mediaPlayer) as T
+            return AudioPlayerViewModel() as T
         } else {
             throw IllegalArgumentException()
         }

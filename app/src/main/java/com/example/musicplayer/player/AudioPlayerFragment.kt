@@ -40,10 +40,11 @@ class AudioPlayerFragment : Fragment() {
         }
         // init view model
         mainViewModel = ViewModelProviders.of(requireActivity()).get(MainActivityViewModel::class.java)
-        playerViewModel = ViewModelProviders.of(requireActivity(), AudioPlayerViewModelFactory(this.mediaPlayer)).get(AudioPlayerViewModel::class.java)
+        playerViewModel = ViewModelProviders.of(requireActivity(), AudioPlayerViewModelFactory()).get(AudioPlayerViewModel::class.java)
         binding.mainViewModel = mainViewModel
         binding.playerViewModel = playerViewModel
-
+        viewLifecycleOwner.lifecycle.addObserver(playerViewModel)
+        playerViewModel.mediaPlayer = mediaPlayer
         /**
          * find audio to play from main view model based on provided nav arg
          */
@@ -101,8 +102,8 @@ class AudioPlayerFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         releasePlayer()
     }
 
