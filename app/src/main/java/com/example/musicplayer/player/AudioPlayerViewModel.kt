@@ -7,7 +7,7 @@ import com.example.musicplayer.model.AudioData
 import com.example.musicplayer.model.Duration
 import kotlinx.coroutines.*
 
-class AudioPlayerViewModel: ViewModel(), LifecycleObserver {
+class AudioPlayerViewModel(): ViewModel(), LifecycleObserver {
     var mediaPlayer: MediaPlayer? = null
     private val defaultDelayMillis = 200L
     private val _isPlaying = MutableLiveData(false)
@@ -64,7 +64,6 @@ class AudioPlayerViewModel: ViewModel(), LifecycleObserver {
             if(time > startMillis){
                 delay(defaultDelayMillis)
             }
-            Log.d("MusicPlayer", mediaPlayer?.currentPosition?.toString()?:"0")
             _timer.value = mediaPlayer?.currentPosition?.toLong()?:0
         }
     }
@@ -79,6 +78,5 @@ class AudioPlayerViewModel: ViewModel(), LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroyFragment(){
         resetTimer()
-        mediaPlayer = null
     }
 }

@@ -44,13 +44,14 @@ class AudioPlayerFragment : Fragment() {
         binding.mainViewModel = mainViewModel
         binding.playerViewModel = playerViewModel
         viewLifecycleOwner.lifecycle.addObserver(playerViewModel)
-        playerViewModel.mediaPlayer = mediaPlayer
+        // set new media player in view model on every create
+         playerViewModel.mediaPlayer = mediaPlayer
         /**
          * find audio to play from main view model based on provided nav arg
          */
         playerViewModel.currentAudioData.observe(viewLifecycleOwner){
             if(it != null){
-                if(mediaPlayer.isPlaying == true){
+                if(mediaPlayer.isPlaying){
                     playerViewModel.resetTimer()
                 }
                 mediaPlayer.reset()
