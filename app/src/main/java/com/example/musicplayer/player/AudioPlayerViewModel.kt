@@ -1,7 +1,6 @@
 package com.example.musicplayer.player
 
 import android.media.MediaPlayer
-import android.util.Log
 import androidx.lifecycle.*
 import com.example.musicplayer.model.AudioData
 import com.example.musicplayer.model.Duration
