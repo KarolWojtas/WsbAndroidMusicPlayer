@@ -16,26 +16,33 @@
         android:layout_height="match_parent"
         tools:context=".player.AudioPlayerFragment">
 
-        <TextView
-            android:id="@+id/playerTitleTxt"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/playerDetailsView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{playerViewModel.currentAudioData.title}"
-            android:textSize="64dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/playerActionBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/playerArtistTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{playerViewModel.currentAudioData.artist}"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/playerTitleTxt" />
+            <TextView
+                android:id="@+id/playerTitleTxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoText="false"
+                android:gravity="center"
+                android:text="@{playerViewModel.currentAudioData.title}"
+                android:textSize="40sp" />
+
+            <TextView
+                android:id="@+id/playerArtistTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{playerViewModel.currentAudioData.artist}"
+                android:textSize="18sp" />
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/playerPrevBtn"
@@ -53,13 +60,37 @@
             android:id="@+id/playerActionBtn"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_baseline_play_circle_outline_24"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/playerTimeView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/playerArtistTxt"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
             app:playerActionSrc="@{playerViewModel.isPlaying}" />
+
+        <LinearLayout
+            android:id="@+id/playerTimeView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/playerPrevBtn"
+            app:layout_constraintVertical_bias="1.0">
+
+            <TextView
+                android:id="@+id/playerDurationTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{playerViewModel.durationText}"
+                android:textSize="24sp" />
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/playerNextBtn"
@@ -72,17 +103,6 @@
             app:layout_constraintBottom_toBottomOf="@+id/playerActionBtn"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/playerActionBtn" />
-
-        <TextView
-            android:id="@+id/playerDurationTxt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:text="@{playerViewModel.durationText}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/playerActionBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
