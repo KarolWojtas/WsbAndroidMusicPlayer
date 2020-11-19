@@ -40,6 +40,6 @@ object AudioDataDiffCallback : DiffUtil.ItemCallback<AudioData>() {
     }
 
     override fun areContentsTheSame(oldItem: AudioData, newItem: AudioData): Boolean {
-        return oldItem.fileName == newItem.fileName
+        return oldItem.id == newItem.id
     }
 }

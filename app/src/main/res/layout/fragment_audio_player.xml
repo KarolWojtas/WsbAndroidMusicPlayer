@@ -27,6 +27,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/playerArtistTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{playerViewModel.currentAudioData.artist}"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/playerTitleTxt" />
+
         <ImageButton
             android:id="@+id/playerPrevBtn"
             android:layout_width="wrap_content"
@@ -48,7 +58,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/playerTitleTxt"
+            app:layout_constraintTop_toBottomOf="@+id/playerArtistTxt"
             app:playerActionSrc="@{playerViewModel.isPlaying}" />
 
         <ImageButton

@@ -57,7 +57,7 @@ class AudioPlayerFragment : Fragment() {
                 mediaPlayer.reset()
                 // handle asset audio
                 if(it.isAsset){
-                    val assetFileDescriptor = requireActivity().assets.openFd("$ASSETS_AUDIO_DIR/${it.fileName}")
+                    val assetFileDescriptor = requireActivity().assets.openFd("$ASSETS_AUDIO_DIR/${it.id}")
                     mediaPlayer.setDataSource(assetFileDescriptor.fileDescriptor, assetFileDescriptor.startOffset, assetFileDescriptor.length)
                 } else {
                     // handle media store audio
@@ -76,9 +76,9 @@ class AudioPlayerFragment : Fragment() {
          */
         if(playerViewModel.currentAudioData.value == null){
             mainViewModel.audioDataList.value?.let {
-                val fileName = navArgs.audioData.fileName
+                val id = navArgs.audioData.id
                 // empty - do navigation with fragments
-                it.find { audio -> audio.fileName == fileName }?.also {found ->
+                it.find { audio -> audio.id == id }?.also { found ->
                     playerViewModel.setCurrentAudio(found)
                 }
 

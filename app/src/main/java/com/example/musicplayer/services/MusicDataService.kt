@@ -6,11 +6,8 @@ import android.content.res.AssetFileDescriptor
 import android.content.res.AssetManager
 import android.media.MediaMetadataRetriever
 import android.net.Uri
-import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
-import android.webkit.MimeTypeMap
-import androidx.annotation.RequiresApi
 import com.example.musicplayer.model.AudioData
 import com.example.musicplayer.model.Duration
 import java.lang.Exception
@@ -38,7 +35,7 @@ class MusicDataService private constructor() {
                 if(analyzedAudioData != null){
                     dataList.add(analyzedAudioData)
                 } else {
-                    dataList.add(AudioData(title = fileNameWithoutExtension(fileName), uri = null, fileName = fileName, isAsset = true))
+                    dataList.add(AudioData(title = fileNameWithoutExtension(fileName), uri = null, id = fileName, isAsset = true))
                 }
                 assetDescriptor.close()
             }
@@ -61,14 +58,13 @@ class MusicDataService private constructor() {
             val mime = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_MIMETYPE)
             audioData = AudioData(
                     title = title?:fileNameWithoutExtension(fileName),
-                    fileName = fileName,
+                    id = fileName,
                     artist = artist,
                     duration = Duration(duration.toLong()),
                     bitRate = bitrate.toLongOrNull(),
                     mimeType = mime,
                     isAsset = true
             )
-            Log.d("MusicDataService", "file: $fileName, title: $title, hasAudio: $hasAudio")
         } catch (e: Exception){
             Log.e("MusicDataService", e.message?:e.stackTraceToString())
             return null
@@ -85,7 +81,6 @@ class MusicDataService private constructor() {
 
     /**
      * Load audio data using content resolver query from media store
-     * todo verify on real device - no files found on emulator
      */
     fun loadDataFromMediaStore(contentResolver: ContentResolver): List<AudioData> {
         val audioDataList = mutableListOf<AudioData>()
@@ -118,7 +113,6 @@ class MusicDataService private constructor() {
                     cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
             val mimeColumn =
                     cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.MIME_TYPE)
-            Log.d("MusicDataService.Media", "count: ${cursor.count}")
             while (cursor.moveToNext()) {
                 // Get values of columns for a given video.
                 val id = cursor.getLong(idColumn)
@@ -132,11 +126,10 @@ class MusicDataService private constructor() {
                         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
                         id
                 )
-                Log.d("MainActivity", arrayOf(contentUri, name, duration).toString())
                 audioDataList.add(AudioData(
                         // todo file name
                         title = title,
-                        fileName = contentUri.lastPathSegment?:id.toString(),
+                        id = contentUri.lastPathSegment?:id.toString(),
                         uri = contentUri,
                         artist = artist,
                         duration = Duration(duration.toLong()),

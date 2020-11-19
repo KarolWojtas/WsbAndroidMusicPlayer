@@ -6,7 +6,7 @@ import android.os.Parcelable
 
 data class AudioData constructor(
     val title: String,
-    val fileName: String,
+    val id: String,
     val uri: Uri? = null,
     val artist: String? = null,
     val duration: Duration? = null,
@@ -17,7 +17,7 @@ data class AudioData constructor(
 
     constructor(parcel: Parcel): this(
         title = parcel.readString()?:"",
-        fileName = parcel.readString()?:"",
+        id = parcel.readString()?:"",
         uri = Uri.parse(parcel.readString()),
         artist = parcel.readString(),
         duration = Duration(parcel.readLong()),
@@ -40,7 +40,7 @@ data class AudioData constructor(
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeString(title)
-        dest?.writeString(fileName)
+        dest?.writeString(id)
         dest?.writeString(uri?.toString())
         dest?.writeString(artist)
         dest?.writeLong(duration?.millis?:0)
@@ -62,6 +62,4 @@ data class Duration(val millis: Long = 0){
     override fun toString(): String {
         return "${minutes.toString().padStart(2, '0')}:${secondsMod.toString().padStart(2, '0')}"
     }
-    val clone: Duration
-    get() = Duration(millis)
 }
