@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.SeekBar
 import androidx.databinding.BindingAdapter
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.navArgs
 import com.example.musicplayer.MainActivityViewModel
 import com.example.musicplayer.R
 import com.example.musicplayer.databinding.FragmentAudioPlayerBinding
+import com.example.musicplayer.model.AudioData
 import com.example.musicplayer.services.ASSETS_AUDIO_DIR
 
 class AudioPlayerFragment : Fragment() {
@@ -36,11 +38,14 @@ class AudioPlayerFragment : Fragment() {
                 start()
                 playerViewModel.setIsPlaying(true)
             }
-            setOnCompletionListener { reset() }
+            setOnCompletionListener {
+                reset()
+                playerViewModel.setIsPlaying(false)
+            }
         }
         // init view model
         mainViewModel = ViewModelProviders.of(requireActivity()).get(MainActivityViewModel::class.java)
-        playerViewModel = ViewModelProviders.of(requireActivity(), AudioPlayerViewModelFactory()).get(AudioPlayerViewModel::class.java)
+        playerViewModel = ViewModelProviders.of(requireActivity()).get(AudioPlayerViewModel::class.java)
         binding.mainViewModel = mainViewModel
         binding.playerViewModel = playerViewModel
         viewLifecycleOwner.lifecycle.addObserver(playerViewModel)
@@ -51,22 +56,7 @@ class AudioPlayerFragment : Fragment() {
          */
         playerViewModel.currentAudioData.observe(viewLifecycleOwner){
             if(it != null){
-                if(mediaPlayer.isPlaying){
-                    playerViewModel.resetTimer()
-                }
-                mediaPlayer.reset()
-                // handle asset audio
-                if(it.isAsset){
-                    val assetFileDescriptor = requireActivity().assets.openFd("$ASSETS_AUDIO_DIR/${it.id}")
-                    mediaPlayer.setDataSource(assetFileDescriptor.fileDescriptor, assetFileDescriptor.startOffset, assetFileDescriptor.length)
-                } else {
-                    // handle media store audio
-                    mediaPlayer.setDataSource(requireContext(), it.uri!!)
-                }
-                mediaPlayer.apply {
-                    prepareAsync()
-                    playerViewModel.startTimer()
-                }
+                playAudio(it)
             } else {
                 mediaPlayer.stop()
             }
@@ -100,6 +90,25 @@ class AudioPlayerFragment : Fragment() {
             playerViewModel.setCurrentAudio(nextAudio)
         }
 
+        binding.playerSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {}
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                playerViewModel.toggleTimer(false)
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                seekBar?.let {
+                    mediaPlayer.seekTo(seekBar.progress)
+                    playerViewModel.toggleTimer(true)
+                }
+            }
+        })
+
+        playerViewModel.timer.observe(viewLifecycleOwner){
+            binding.playerSeekBar.progress = it.toInt()
+        }
+
         return binding.root
     }
 
@@ -109,10 +118,17 @@ class AudioPlayerFragment : Fragment() {
     }
 
     private fun onPlayerAction(){
-        if (playerViewModel.isPlaying.value == true){
-            pause()
-        } else {
-            resume()
+        when{
+            playerViewModel.isPlaying.value == true
+                -> pause()
+            playerViewModel.timer.value == playerViewModel.currentAudioData.value?.duration?.millis
+                -> playerViewModel.currentAudioData.value.let {
+                if (it != null) {
+                    playAudio(it)
+                }
+            }
+            else
+                -> resume()
         }
     }
 
@@ -133,6 +149,31 @@ class AudioPlayerFragment : Fragment() {
         }
         mediaPlayer.reset()
         mediaPlayer.release()
+    }
+
+    private fun playAudio(audio: AudioData, resetPlayer: Boolean = true){
+        if(mediaPlayer.isPlaying){
+            playerViewModel.resetTimer()
+        }
+        if (resetPlayer){
+            mediaPlayer.reset()
+        }
+        // handle asset audio
+        if(audio.isAsset){
+            val assetFileDescriptor = requireActivity().assets.openFd("$ASSETS_AUDIO_DIR/${audio.id}")
+            mediaPlayer.setDataSource(assetFileDescriptor.fileDescriptor, assetFileDescriptor.startOffset, assetFileDescriptor.length)
+        } else {
+            // handle media store audio
+            mediaPlayer.setDataSource(requireContext(), audio.uri!!)
+        }
+        mediaPlayer.apply {
+            prepareAsync()
+            playerViewModel.startTimer()
+        }
+        binding.playerSeekBar.apply {
+            progress = 0
+            max = audio.duration?.millis?.toInt()?:0
+        }
     }
 }
 

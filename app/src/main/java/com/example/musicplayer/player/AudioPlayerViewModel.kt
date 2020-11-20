@@ -6,7 +6,7 @@ import com.example.musicplayer.model.AudioData
 import com.example.musicplayer.model.Duration
 import kotlinx.coroutines.*
 
-class AudioPlayerViewModel(): ViewModel(), LifecycleObserver {
+class AudioPlayerViewModel: ViewModel(), LifecycleObserver {
     var mediaPlayer: MediaPlayer? = null
     private val defaultDelayMillis = 200L
     private val _isPlaying = MutableLiveData(false)
@@ -16,10 +16,14 @@ class AudioPlayerViewModel(): ViewModel(), LifecycleObserver {
     val currentAudioData: LiveData<AudioData?>
     get() = _currentAudioData
 
-    private val _timer = MutableLiveData<Long>(0L)
+    private val _timer = MutableLiveData(0L)
+
+    val timer: LiveData<Long>
+    get() = _timer
+
     private var timerScope = CoroutineScope(Dispatchers.Main + Job())
 
-    val duration: LiveData<String>
+    private val duration: LiveData<String>
     get() = Transformations.map(_timer) { Duration(it).toString() }
     val durationText: LiveData<String>
         get() = duration.map { "$it : ${currentAudioData.value?.duration}" }
@@ -41,8 +45,9 @@ class AudioPlayerViewModel(): ViewModel(), LifecycleObserver {
         _isPlaying.value = isPlaying
     }
 
-    private fun toggleTimer(){
-        if (_isPlaying.value == true){
+    fun toggleTimer(turnOn: Boolean? = null){
+        val activateTimer = turnOn ?: (_isPlaying.value == false)
+        if (!activateTimer){
             // pause timer
             timerScope.cancel()
             timerScope = CoroutineScope(Dispatchers.Main + Job())
@@ -57,14 +62,16 @@ class AudioPlayerViewModel(): ViewModel(), LifecycleObserver {
     }
 
     private suspend fun countUp(startMillis: Long, endMillis: Long) {
-        // gets behid, maybe try changing context
         _timer.value = startMillis
-        for (time in startMillis..endMillis step defaultDelayMillis){
+        val currentRange = startMillis..endMillis
+        for (time in currentRange step defaultDelayMillis){
             if(time > startMillis){
                 delay(defaultDelayMillis)
             }
-            _timer.value = mediaPlayer?.currentPosition?.toLong()?:0
+            _timer.value = if(mediaPlayer?.currentPosition?.toLong() in currentRange)
+                mediaPlayer?.currentPosition?.toLong() else mediaPlayer?.duration?.toLong() ?: endMillis
         }
+        _timer.value = endMillis
     }
 
     fun resetTimer(){
