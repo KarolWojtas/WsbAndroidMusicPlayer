@@ -40,7 +40,7 @@ class AudioPlayerFragment : Fragment() {
             }
             setOnCompletionListener {
                 reset()
-                playerViewModel.setIsPlaying(false)
+                playerViewModel.setIsPlaying(null)
             }
         }
         // init view model
@@ -118,16 +118,17 @@ class AudioPlayerFragment : Fragment() {
     }
 
     private fun onPlayerAction(){
-        when{
-            playerViewModel.isPlaying.value == true
+        when(playerViewModel.status.value){
+            AudioPlayerStates.playing
                 -> pause()
-            playerViewModel.timer.value == playerViewModel.currentAudioData.value?.duration?.millis
+            AudioPlayerStates.released
                 -> playerViewModel.currentAudioData.value.let {
                 if (it != null) {
+                    playerViewModel.resetTimer()
                     playAudio(it)
                 }
             }
-            else
+            AudioPlayerStates.paused
                 -> resume()
         }
     }
@@ -152,7 +153,7 @@ class AudioPlayerFragment : Fragment() {
     }
 
     private fun playAudio(audio: AudioData, resetPlayer: Boolean = true){
-        if(mediaPlayer.isPlaying){
+        if(playerViewModel.status.value == AudioPlayerStates.playing){
             playerViewModel.resetTimer()
         }
         if (resetPlayer){
@@ -178,6 +179,6 @@ class AudioPlayerFragment : Fragment() {
 }
 
 @BindingAdapter("playerActionSrc")
-fun playerActionSrc(view: ImageButton, isPlaying: Boolean){
-    view.setImageResource(if(!isPlaying) R.drawable.ic_baseline_play_circle_outline_24 else R.drawable.ic_baseline_pause_circle_outline_24)
+fun playerActionSrc(view: ImageButton, state: AudioPlayerStates){
+    view.setImageResource(if(state != AudioPlayerStates.playing) R.drawable.ic_baseline_play_circle_outline_24 else R.drawable.ic_baseline_pause_circle_outline_24)
 }

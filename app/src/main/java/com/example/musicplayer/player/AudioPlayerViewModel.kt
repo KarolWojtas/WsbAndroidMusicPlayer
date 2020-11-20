@@ -1,17 +1,23 @@
 package com.example.musicplayer.player
 
 import android.media.MediaPlayer
+import android.util.Log
 import androidx.lifecycle.*
 import com.example.musicplayer.model.AudioData
 import com.example.musicplayer.model.Duration
 import kotlinx.coroutines.*
 
+enum class AudioPlayerStates(val toBool: Boolean?) {
+    playing(true), paused(false), released(null)
+
+}
 class AudioPlayerViewModel: ViewModel(), LifecycleObserver {
     var mediaPlayer: MediaPlayer? = null
     private val defaultDelayMillis = 200L
-    private val _isPlaying = MutableLiveData(false)
-    val isPlaying: LiveData<Boolean>
-    get() = _isPlaying
+    private val _status = MutableLiveData(AudioPlayerStates.released)
+    val status: LiveData<AudioPlayerStates>
+    get() = _status
+
     private val _currentAudioData = MutableLiveData<AudioData?>()
     val currentAudioData: LiveData<AudioData?>
     get() = _currentAudioData
@@ -30,7 +36,7 @@ class AudioPlayerViewModel: ViewModel(), LifecycleObserver {
 
     fun cleanup(){
         _currentAudioData.value = null
-        _isPlaying.value = false
+        _status.value = AudioPlayerStates.released
     }
 
     fun setCurrentAudio(audioData: AudioData){
@@ -38,15 +44,15 @@ class AudioPlayerViewModel: ViewModel(), LifecycleObserver {
         _timer.value = 0L
     }
 
-    fun setIsPlaying(isPlaying: Boolean){
-        if(_isPlaying.value != isPlaying){
+    fun setIsPlaying(isPlaying: Boolean?){
+        if(this._status.value?.toBool != isPlaying){
             toggleTimer()
         }
-        _isPlaying.value = isPlaying
+        setStatusFromBoolean(isPlaying)
     }
 
     fun toggleTimer(turnOn: Boolean? = null){
-        val activateTimer = turnOn ?: (_isPlaying.value == false)
+        val activateTimer = turnOn ?: (_status.value != AudioPlayerStates.playing)
         if (!activateTimer){
             // pause timer
             timerScope.cancel()
@@ -68,8 +74,11 @@ class AudioPlayerViewModel: ViewModel(), LifecycleObserver {
             if(time > startMillis){
                 delay(defaultDelayMillis)
             }
-            _timer.value = if(mediaPlayer?.currentPosition?.toLong() in currentRange)
-                mediaPlayer?.currentPosition?.toLong() else mediaPlayer?.duration?.toLong() ?: endMillis
+            _timer.value = when{
+                _status.value == AudioPlayerStates.released -> endMillis
+                mediaPlayer?.currentPosition?.toLong() in currentRange -> mediaPlayer?.currentPosition?.toLong()
+                else -> mediaPlayer?.duration?.toLong()
+            }
         }
         _timer.value = endMillis
     }
@@ -79,6 +88,14 @@ class AudioPlayerViewModel: ViewModel(), LifecycleObserver {
             timerScope.cancel()
             timerScope = CoroutineScope(Dispatchers.Main + Job())
             _timer.value = 0
+        }
+    }
+
+    private fun setStatusFromBoolean(value: Boolean?){
+        _status.value = when (value) {
+            null -> AudioPlayerStates.released
+            true -> AudioPlayerStates.playing
+            else -> AudioPlayerStates.paused
         }
     }
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

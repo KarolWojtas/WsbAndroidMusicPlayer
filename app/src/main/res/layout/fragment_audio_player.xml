@@ -68,7 +68,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            app:playerActionSrc="@{playerViewModel.isPlaying}" />
+            app:playerActionSrc="@{playerViewModel.status}" />
 
         <LinearLayout
             android:id="@+id/playerTimeView"
