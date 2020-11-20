@@ -64,7 +64,7 @@ class AudioPlayerViewModel: ViewModel(), LifecycleObserver {
     }
 
     fun startTimer() = timerScope.launch {
-        countUp(_timer.value?:0, currentAudioData.value?.duration?.millis?:0)
+        countUp(mediaPlayer?.currentPosition?.toLong()?:0, currentAudioData.value?.duration?.millis?:0)
     }
 
     private suspend fun countUp(startMillis: Long, endMillis: Long) {
